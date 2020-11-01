@@ -1,4 +1,7 @@
-import {getShopInfo} from './handlers/getShopInfo';
-import {getShopAdminInfo} from './handlers/getShopAdminInfo';
+import {getProductsList} from './handlers/get-products-list';
+import {getProductsById} from './handlers/get-products-by-id';
 
-export {getShopInfo, getShopAdminInfo};
+export {
+  getProductsList,
+  getProductsById
+};
