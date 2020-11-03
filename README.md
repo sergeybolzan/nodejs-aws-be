@@ -1,5 +1,8 @@
 # nodejs-aws-be
 
+Product service swagger link:
+[https://app.swaggerhub.com/apis/sergeybolzan/product-service/1.0.0](https://app.swaggerhub.com/apis/sergeybolzan/product-service/1.0.0)
+
 Serverless template names:
 - aws-nodejs
 - aws-nodejs-typescript
