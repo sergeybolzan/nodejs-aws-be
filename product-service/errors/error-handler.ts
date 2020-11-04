@@ -1,17 +1,12 @@
 import {APIGatewayProxyEvent} from "aws-lambda/trigger/api-gateway-proxy";
+import {createResponse} from "../utils/create-response";
 
 export const errorHandler = (func: Function) => async (event?: APIGatewayProxyEvent) => {
   try {
-    return func(event);
+    return await func(event);
   } catch (e) {
-    return e.statusCode ? {
-      statusCode: e.statusCode,
-      headers: {"Access-Control-Allow-Origin": "*"},
-      body: e.message
-    } : {
-      statusCode: 500,
-      headers: {"Access-Control-Allow-Origin": "*"},
-      body: "Internal server error"
-    }
+    return e.statusCode
+      ? createResponse(e.statusCode, e.message)
+      : createResponse(500, "Internal server error");
   }
 }
