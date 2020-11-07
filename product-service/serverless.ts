@@ -1,4 +1,5 @@
 import type {Serverless} from "serverless/aws";
+import { config } from "./common/config";
 
 const serverlessConfiguration: Serverless = {
   service: "product-service",
@@ -9,7 +10,7 @@ const serverlessConfiguration: Serverless = {
       includeModules: true
     }
   },
-  plugins: ["serverless-webpack"],
+  plugins: ["serverless-webpack", "serverless-dotenv-plugin"],
   provider: {
     name: "aws",
     runtime: "nodejs12.x",
@@ -18,7 +19,12 @@ const serverlessConfiguration: Serverless = {
       minimumCompressionSize: 1024
     },
     environment: {
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
+      PG_HOST: config.databaseOptions.host,
+      PG_PORT: config.databaseOptions.port,
+      PG_DATABASE: config.databaseOptions.database,
+      PG_USERNAME: config.databaseOptions.user,
+      PG_PASSWORD: config.databaseOptions.password
     }
   },
   functions: {
@@ -40,13 +46,6 @@ const serverlessConfiguration: Serverless = {
           http: {
             method: "get",
             path: "products/{productId}",
-            request: {
-              parameters: {
-                paths: {
-                  productId: true
-                }
-              }
-            }
           }
         }
       ]
