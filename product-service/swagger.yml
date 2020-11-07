@@ -1,0 +1,54 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Product service"
+host: "c6euo1zydj.execute-api.eu-west-1.amazonaws.com"
+basePath: "/dev"
+tags:
+  - name: "products"
+    description: "Access to Products"
+paths:
+  /products:
+    get:
+      tags:
+        - "products"
+      summary: "Get all products"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Product"
+  /products/{productId}:
+    get:
+      tags:
+        - "products"
+      summary: "Get a single product by id"
+      parameters:
+        - name: "productId"
+          in: "path"
+          description: "ID of product to return"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Product"
+        "404":
+          description: "Product not found"
+definitions:
+  Product:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      count:
+        type: "number"
+      description:
+        type: "string"
+      price:
+        type: "number"
+      title:
+        type: "string"
