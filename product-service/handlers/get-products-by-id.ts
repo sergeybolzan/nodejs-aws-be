@@ -7,7 +7,6 @@ import {errorHandler} from "../common/error-handler";
 import {Client} from "pg";
 import {createResponse} from "../utils/create-response";
 import {config} from "../common/config";
-import {format} from "util";
 import {scripts} from "../scripts/scripts";
 import {logRequest} from "../common/log-request";
 
@@ -23,10 +22,10 @@ export const getProductsById = errorHandler(async (event: APIGatewayProxyEvent) 
 
     let products: Product[];
     try {
-        const response = await client.query(format(scripts.getProductById, id));
+        const response = await client.query(scripts.getProductById, [id]);
         products = response.rows;
     } catch (e) {
-        throw new Error("Error during database request executing");
+        throw e;
     } finally {
         client.end();
     }

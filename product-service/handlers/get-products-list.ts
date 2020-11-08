@@ -17,7 +17,7 @@ export const getProductsList = errorHandler(async (event: APIGatewayProxyEvent) 
         const {rows: products} = await client.query(scripts.getProducts);
         return createResponse(StatusCodes.OK, products);
     } catch (e) {
-        throw new Error("Error during database request executing");
+        throw e;
     } finally {
         client.end();
     }

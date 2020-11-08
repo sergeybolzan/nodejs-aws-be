@@ -1,8 +1,8 @@
 interface Product {
-  "count": number;
-  "description": string;
-  "id": string;
-  "price": number;
-  "title": string;
+    "id"?: string;
+    "count": number;
+    "description": string;
+    "price": number;
+    "title": string;
 }
 

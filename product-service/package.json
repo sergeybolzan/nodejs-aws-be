@@ -7,6 +7,7 @@
     "deploy": "sls deploy",
     "invoke getProductsList": "sls invoke local --function getProductsList",
     "invoke getProductsById": "sls invoke local --function getProductsById --path test-event.json",
+    "invoke createProduct": "sls invoke local --function createProduct --path test-event.json",
     "test": "jest"
   },
   "dependencies": {
