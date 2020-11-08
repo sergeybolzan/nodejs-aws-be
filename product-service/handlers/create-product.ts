@@ -17,19 +17,21 @@ export const createProduct = errorHandler(async (event: APIGatewayProxyEvent) =>
     } catch (e) {
         throw new createError.BadRequest(e.message);
     }
-    if (!body?.title || !body?.count) {
-        throw new createError.BadRequest("Title or count fields are absent");
+    if (!body?.title) {
+        throw new createError.BadRequest("Title field is absent");
     }
 
     const client: Client = new Client(config.databaseOptions);
     await client.connect();
 
-    let id: string;
+    let createdProduct: Product;
     try {
         await client.query("BEGIN");
-        const response = await client.query(scripts.createProduct, [body.title, body.description, body.price]);
-        id = response.rows[0].id;
+        let response = await client.query(scripts.createProduct, [body.title, body.description, body.price]);
+        const id: number = response.rows[0].id;
         await client.query(scripts.createStock, [id, body.count]);
+        response = await client.query(scripts.getProductById, [id]);
+        createdProduct = response.rows[0];
         await client.query("COMMIT");
     } catch (e) {
         await client.query("ROLLBACK");
@@ -38,5 +40,5 @@ export const createProduct = errorHandler(async (event: APIGatewayProxyEvent) =>
         client.end();
     }
 
-    return createResponse(StatusCodes.OK, id);
+    return createResponse(StatusCodes.OK, createdProduct);
 });

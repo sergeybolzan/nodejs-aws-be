@@ -14,12 +14,41 @@ paths:
         - "products"
       summary: "Get all products"
       responses:
-        "200":
-          description: "successful operation"
+        200:
+          description: "Successful operation"
           schema:
             type: "array"
             items:
               $ref: "#/definitions/Product"
+    post:
+      tags:
+        - "products"
+      summary: "Create product"
+      parameters:
+        - name: "product"
+          in: "body"
+          description: "The product to create."
+          required: true
+          schema:
+            type: "object"
+            required:
+              - "title"
+            properties:
+              title:
+                type: "string"
+              description:
+                type: "string"
+              price:
+                type: "number"
+              count:
+                type: "number"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Product"
+        400:
+          description: "Bad request"
   /products/{productId}:
     get:
       tags:
@@ -32,12 +61,14 @@ paths:
           required: true
           type: "string"
       responses:
-        "200":
-          description: "successful operation"
+        200:
+          description: "Successful operation"
           schema:
             $ref: "#/definitions/Product"
-        "404":
-          description: "Product not found"
+        400:
+          description: "Bad request"
+        404:
+          description: "Not Found"
 definitions:
   Product:
     type: "object"

@@ -1,6 +1,6 @@
 INSERT INTO stock (product_id, count)
-VALUES ('434d8ab7-338a-4179-8a00-9ea179c293f5', 2),
-       ('f5c901f5-5188-4f0a-94ca-08d4bc19562b', 7),
-       ('3af357fd-f5de-4fae-80e4-bb15b98504dc', 1),
-       ('62a4d719-5a18-42d3-9930-7686e3986f60', 0),
-       ('235f476a-14c5-45de-8bf0-ec12dbed806f', 5)
+VALUES ('0c43493a-7c7c-4894-8b08-3ecb453d5678', 2),
+       ('c8d97a23-eac9-484c-b2f7-df29b9de91d7', 7),
+       ('d3199ce1-4048-43f9-916c-95806382b70a', 3),
+       ('9ae75db8-c195-47f6-bb5c-35fcab8f319e', 9),
+       ('70b0424a-1f18-4630-a3d1-8280cd6da004', 5)
