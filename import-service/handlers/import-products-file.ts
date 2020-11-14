@@ -1,32 +1,24 @@
-import {APIGatewayProxyHandler} from 'aws-lambda';
-import * as AWS from 'aws-sdk';
+import {APIGatewayProxyEvent, APIGatewayProxyHandler} from 'aws-lambda';
+import {S3} from 'aws-sdk';
+import {StatusCodes} from 'http-status-codes';
+import {logRequest} from '../common/log-request';
+import {errorHandler} from '../common/error-handler';
+import {createResponse} from '../utils/create-response';
+import {config} from '../common/config';
 
-const BUCKET_NAME = 'import-service-nodejs-bucket';
+export const importProductsFile: APIGatewayProxyHandler = errorHandler(async (event: APIGatewayProxyEvent) => {
+  logRequest(event);
+  const filePath: string = `uploaded/${(event.queryStringParameters.name)}`;
 
-export const importProductsFile: APIGatewayProxyHandler = async () => {
-  const s3 = new AWS.S3({region: 'eu-west-1'});
-  let status = 200;
-  let thumbnails = [];
+  const s3: S3 = new S3({region: 'eu-west-1', signatureVersion: 'v4'});
   const params = {
-    Bucket: BUCKET_NAME,
-    Prefix: 'thumbnails/'
+    Bucket: config.BUCKET_NAME,
+    Key: filePath,
+    Expires: 60,
+    ContentType: 'text/csv'
   };
 
-  try {
-    const s3Response = await s3.listObjectsV2(params).promise();
-    thumbnails = s3Response.Contents;
-  } catch (e) {
-    console.error(e);
-    status = 500;
-  }
+  const url: string = await s3.getSignedUrl('putObject', params);
 
-  return {
-    statusCode: status,
-    headers: {'Access-Control-Allow-Origin': '*'},
-    body: JSON.stringify(
-      thumbnails
-        .filter((thumbnail) => thumbnail.Size)
-        .map((thumbnail) => `https://${BUCKET_NAME}.s3.amazonaws.com/${thumbnail.Key}`)
-    )
-  };
-};
+  return createResponse(StatusCodes.OK, url);
+});

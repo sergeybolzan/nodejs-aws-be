@@ -54,8 +54,8 @@ const serverlessConfiguration: Serverless = {
         }
       ]
     },
-    imageUpload: {
-      handler: 'handler.imageUpload',
+    importFileParser: {
+      handler: 'handler.importFileParser',
       events: [
         {
           s3: {
@@ -63,8 +63,8 @@ const serverlessConfiguration: Serverless = {
             event: 's3:ObjectCreated:*',
             rules: [
               {
-                prefix: 'images/',
-                suffix: '.png'
+                prefix: 'uploaded/',
+                suffix: ''
               }
             ],
             existing: true

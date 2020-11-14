@@ -1,7 +1,7 @@
 import {importProductsFile} from './handlers/import-products-file';
-import {imageUpload} from './handlers/image-upload';
+import {importFileParser} from './handlers/import-file-parser';
 
 export {
   importProductsFile,
-  imageUpload
+  importFileParser
 };
