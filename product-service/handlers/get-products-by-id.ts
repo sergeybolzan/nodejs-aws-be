@@ -1,20 +1,38 @@
 import "source-map-support/register";
 import {APIGatewayProxyEvent} from "aws-lambda/trigger/api-gateway-proxy";
-import productList from "../data/productList.json";
-import {errorHandler} from "../errors/error-handler";
-import {NotFoundError} from "../errors/not-found-error";
+import {validate as uuidValidate} from "uuid";
+import {StatusCodes} from "http-status-codes";
+import * as createError from "http-errors";
+import {errorHandler} from "../common/error-handler";
+import {Client} from "pg";
 import {createResponse} from "../utils/create-response";
+import {config} from "../common/config";
+import {scripts} from "../scripts/scripts";
+import {logRequest} from "../common/log-request";
 
 export const getProductsById = errorHandler(async (event: APIGatewayProxyEvent) => {
-  const id: string = event?.pathParameters?.productId;
-  const product: Product = await getProduct(id);
-  if (!product) {
-    throw new NotFoundError("Product");
-  }
-  return createResponse(200, product);
-});
+    logRequest(event);
+    const id: string = event?.pathParameters?.productId;
+    if (!uuidValidate(id)) {
+        throw new createError.BadRequest();
+    }
 
-const getProduct = async (id: string): Promise<Product> => {
-  const product = productList.find((product: Product) => product.id === id);
-  return Promise.resolve(product);
-};
+    const client: Client = new Client(config.databaseOptions);
+    await client.connect();
+
+    let products: Product[];
+    try {
+        const response = await client.query(scripts.getProductById, [id]);
+        products = response.rows;
+    } catch (e) {
+        throw e;
+    } finally {
+        client.end();
+    }
+
+    const product: Product = products[0];
+    if (!product) {
+        throw new createError.NotFound();
+    }
+    return createResponse(StatusCodes.OK, product);
+});

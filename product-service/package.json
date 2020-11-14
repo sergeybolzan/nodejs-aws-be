@@ -4,10 +4,18 @@
   "description": "Serverless webpack example using Typescript",
   "main": "handler.js",
   "scripts": {
+    "deploy": "sls deploy",
+    "invoke getProductsList": "sls invoke local --function getProductsList",
+    "invoke getProductsById": "sls invoke local --function getProductsById --path test-event.json",
+    "invoke createProduct": "sls invoke local --function createProduct --path test-event.json",
     "test": "jest"
   },
   "dependencies": {
-    "source-map-support": "^0.5.10"
+    "http-errors": "^1.8.0",
+    "http-status-codes": "^2.1.4",
+    "pg": "^8.4.2",
+    "source-map-support": "^0.5.10",
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",
@@ -19,6 +27,7 @@
     "babel-jest": "^26.6.1",
     "fork-ts-checker-webpack-plugin": "^3.0.1",
     "jest": "^26.6.1",
+    "serverless-dotenv-plugin": "^3.1.0",
     "serverless-webpack": "^5.2.0",
     "ts-loader": "^5.3.3",
     "ts-node": "^8.10.2",

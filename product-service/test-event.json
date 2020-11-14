@@ -1,5 +1,6 @@
 {
   "pathParameters": {
-    "productId": "7567ec4b-b10c-48c5-9345-fc73c48a80a0"
-  }
+    "productId": "0c43493a-7c7c-4894-8b08-3ecb453d5678"
+  },
+  "body": "{\"title\": \"Lambda\", \"price\": 10, \"count\": 11}"
 }
