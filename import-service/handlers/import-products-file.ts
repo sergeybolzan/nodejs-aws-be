@@ -18,7 +18,7 @@ export const importProductsFile: APIGatewayProxyHandler = errorHandler(async (ev
     ContentType: 'text/csv'
   };
 
-  const url: string = await s3.getSignedUrl('putObject', params);
+  const url: string = await s3.getSignedUrlPromise('putObject', params);
 
   return createResponse(StatusCodes.OK, url);
 });

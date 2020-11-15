@@ -20,3 +20,5 @@ rules:
   no-restricted-syntax: off
   max-len: [warn, 180]
   no-console: off
+  import/no-extraneous-dependencies: off
+  object-curly-newline: off
