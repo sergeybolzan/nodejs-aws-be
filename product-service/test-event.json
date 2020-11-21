@@ -2,5 +2,13 @@
   "pathParameters": {
     "productId": "0c43493a-7c7c-4894-8b08-3ecb453d5678"
   },
-  "body": "{\"title\": \"Lambda\", \"price\": 10, \"count\": 11}"
+  "body": "{\"title\": \"Lambda\", \"price\": 10, \"count\": 11}",
+  "Records": [
+    {
+      "body": "{\"title\": \"Hello from SQS!\", \"description\": \"des\", \"price\": 2, \"count\": 5}"
+    },
+    {
+      "body": "{\"title\": \"Hello!\", \"description\": \"descr\", \"price\": 7, \"count\": 7}"
+    }
+  ]
 }

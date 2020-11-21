@@ -1,5 +1,4 @@
 export const config = {
   BUCKET_NAME: 'import-service-nodejs-bucket',
-  SQS_URL: process.env.SQS_URL,
-  SNS_ARN: process.env.SNS_ARN
+  CATALOG_ITEMS_QUEUE_URL: process.env.CATALOG_ITEMS_QUEUE_URL
 };

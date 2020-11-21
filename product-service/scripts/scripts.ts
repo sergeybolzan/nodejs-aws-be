@@ -21,5 +21,10 @@ export const scripts = {
                     RETURNING id`,
 
     createStock: `INSERT INTO stock(product_id, count)
-                  VALUES ($1, $2)`
+                  VALUES ($1, $2)`,
+
+    createProducts: values => `INSERT INTO product(title, description, price) VALUES ${values}
+                               RETURNING id`,
+
+    createStocks: values => `INSERT INTO stock(product_id, count) VALUES ${values}`
 };

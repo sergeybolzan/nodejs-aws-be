@@ -9,7 +9,7 @@ const serverlessConfiguration: Serverless = {
     webpack: {
       webpackConfig: './webpack.config.js',
       includeModules: {
-        forceExclude: 'aws-sdk',
+        forceExclude: 'aws-sdk'
       }
     }
   },
@@ -23,12 +23,7 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-      SQS_URL: {
-        Ref: 'SQSQueue'
-      },
-      SNS_ARN: {
-        Ref: 'SNSTopic'
-      }
+      CATALOG_ITEMS_QUEUE_URL: '${cf:product-service-${self:provider.stage}.SQSQueueUrl}'
     },
     iamRoleStatements: [
       {
@@ -44,44 +39,9 @@ const serverlessConfiguration: Serverless = {
       {
         Effect: 'Allow',
         Action: 'sqs:*',
-        Resource: [{
-          'Fn::GetAtt': ['SQSQueue', 'Arn']
-        }]
-      },
-      {
-        Effect: 'Allow',
-        Action: 'sns:*',
-        Resource: {
-          Ref: 'SNSTopic'
-        }
+        Resource: ['${cf:product-service-${self:provider.stage}.SQSQueueArn}']
       }
     ]
-  },
-  resources: {
-    Resources: {
-      SQSQueue: {
-        Type: 'AWS::SQS::Queue',
-        Properties: {
-          QueueName: 'QUEUE_NAME'
-        }
-      },
-      SNSTopic: {
-        Type: 'AWS::SNS::Topic',
-        Properties: {
-          TopicName: 'TOPIC_NAME'
-        }
-      },
-      SNSSubscription: {
-        Type: 'AWS::SNS::Subscription',
-        Properties: {
-          Endpoint: 'hoaxi@mail.ru',
-          Protocol: 'email',
-          TopicArn: {
-            Ref: 'SNSTopic'
-          }
-        }
-      }
-    }
   },
   functions: {
     importProductsFile: {
@@ -116,30 +76,6 @@ const serverlessConfiguration: Serverless = {
               }
             ],
             existing: true
-          }
-        }
-      ]
-    },
-    usersSubmit: {
-      handler: 'handler.usersSubmit',
-      events: [
-        {
-          http: {
-            path: 'users',
-            method: 'post'
-          }
-        }
-      ]
-    },
-    usersInvite: {
-      handler: 'handler.usersInvite',
-      events: [
-        {
-          sqs: {
-            batchSize: 2,
-            arn: {
-              'Fn::GetAtt': ['SQSQueue', 'Arn']
-            }
           }
         }
       ]

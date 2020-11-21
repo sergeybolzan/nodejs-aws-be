@@ -11,5 +11,6 @@ const databaseOptions = {
 }
 
 export const config = {
-    databaseOptions
+    databaseOptions,
+    SNS_ARN: process.env.SNS_ARN
 };
