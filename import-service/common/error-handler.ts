@@ -1,10 +1,9 @@
-import {APIGatewayProxyEvent} from 'aws-lambda/trigger/api-gateway-proxy';
 import {StatusCodes, ReasonPhrases} from 'http-status-codes';
 import {createResponse} from '../utils/create-response';
 
-export const errorHandler = (func: Function) => async (event?: APIGatewayProxyEvent) => {
+export const errorHandler = (func: Function) => async (...params) => {
   try {
-    return await func(event);
+    return await func(...params);
   } catch (e) {
     return e.statusCode
       ? createResponse(e.statusCode, e.message)
