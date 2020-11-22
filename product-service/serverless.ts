@@ -1,5 +1,5 @@
 import type {Serverless} from "serverless/aws";
-import { config } from "./common/config";
+import {config} from './common/config';
 
 const serverlessConfiguration: Serverless = {
   service: "product-service",
@@ -22,11 +22,6 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
-      PG_HOST: config.databaseOptions.host,
-      PG_PORT: config.databaseOptions.port,
-      PG_DATABASE: config.databaseOptions.database,
-      PG_USERNAME: config.databaseOptions.user,
-      PG_PASSWORD: config.databaseOptions.password,
       SNS_ARN: {
         Ref: 'createProductTopic'
       }
@@ -62,13 +57,29 @@ const serverlessConfiguration: Serverless = {
           TopicName: 'createProductTopic'
         }
       },
-      SNSSubscription: {
+      SNSSubscriptionImportSuccess: {
         Type: 'AWS::SNS::Subscription',
         Properties: {
-          Endpoint: 'hoaxi@mail.ru',
+          Endpoint: config.EMAIL_SUCCESS,
           Protocol: 'email',
           TopicArn: {
             Ref: 'createProductTopic'
+          },
+          FilterPolicy: {
+            status: ["success"]
+          }
+        }
+      },
+      SNSSubscriptionImportFailed: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: config.EMAIL_FAILED,
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'createProductTopic'
+          },
+          FilterPolicy: {
+            status: ["failed"]
           }
         }
       }
