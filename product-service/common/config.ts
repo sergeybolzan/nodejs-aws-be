@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const databaseOptions = {
     host: process.env.PG_HOST,
     port: process.env.PG_PORT,
@@ -11,5 +13,8 @@ const databaseOptions = {
 }
 
 export const config = {
-    databaseOptions
+    DATABASE_OPTIONS: databaseOptions,
+    SNS_ARN: process.env.SNS_ARN,
+    EMAIL_SUCCESS: process.env.EMAIL_SUCCESS,
+    EMAIL_FAILED: process.env.EMAIL_FAILED
 };

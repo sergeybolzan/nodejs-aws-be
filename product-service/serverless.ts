@@ -1,5 +1,5 @@
 import type {Serverless} from "serverless/aws";
-import { config } from "./common/config";
+import {config} from './common/config';
 
 const serverlessConfiguration: Serverless = {
   service: "product-service",
@@ -7,7 +7,9 @@ const serverlessConfiguration: Serverless = {
   custom: {
     webpack: {
       webpackConfig: "./webpack.config.js",
-      includeModules: true
+      includeModules: {
+        forceExclude: 'aws-sdk'
+      }
     }
   },
   plugins: ["serverless-webpack", "serverless-dotenv-plugin"],
@@ -20,11 +22,79 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
-      PG_HOST: config.databaseOptions.host,
-      PG_PORT: config.databaseOptions.port,
-      PG_DATABASE: config.databaseOptions.database,
-      PG_USERNAME: config.databaseOptions.user,
-      PG_PASSWORD: config.databaseOptions.password
+      SNS_ARN: {
+        Ref: 'createProductTopic'
+      }
+    },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: [{
+          'Fn::GetAtt': ['catalogItemsQueue', 'Arn']
+        }]
+      },
+      {
+        Effect: 'Allow',
+        Action: 'sns:*',
+        Resource: {
+          Ref: 'createProductTopic'
+        }
+      }
+    ]
+  },
+  resources: {
+    Resources: {
+      catalogItemsQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: 'catalogItemsQueue'
+        }
+      },
+      createProductTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          TopicName: 'createProductTopic'
+        }
+      },
+      SNSSubscriptionImportSuccess: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: config.EMAIL_SUCCESS,
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'createProductTopic'
+          },
+          FilterPolicy: {
+            status: ["success"]
+          }
+        }
+      },
+      SNSSubscriptionImportFailed: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: config.EMAIL_FAILED,
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'createProductTopic'
+          },
+          FilterPolicy: {
+            status: ["failed"]
+          }
+        }
+      }
+    },
+    Outputs: {
+      SQSQueueUrl: {
+        Value: {
+          Ref: 'catalogItemsQueue'
+        }
+      },
+      SQSQueueArn: {
+        Value: {
+          'Fn::GetAtt': ['catalogItemsQueue', 'Arn']
+        }
+      }
     }
   },
   functions: {
@@ -58,6 +128,19 @@ const serverlessConfiguration: Serverless = {
             method: "post",
             path: "products",
             cors: true
+          }
+        }
+      ]
+    },
+    catalogBatchProcess: {
+      handler: 'handler.catalogBatchProcess',
+      events: [
+        {
+          sqs: {
+            batchSize: 5,
+            arn: {
+              'Fn::GetAtt': ['catalogItemsQueue', 'Arn']
+            }
           }
         }
       ]

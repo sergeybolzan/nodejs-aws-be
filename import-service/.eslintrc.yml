@@ -22,3 +22,5 @@ rules:
   no-console: off
   import/no-extraneous-dependencies: off
   object-curly-newline: off
+  linebreak-style: off
+  no-template-curly-in-string: off

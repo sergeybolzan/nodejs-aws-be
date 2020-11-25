@@ -1,11 +1,12 @@
 import {S3Event} from 'aws-lambda';
-import {S3} from 'aws-sdk';
+import {S3, SQS} from 'aws-sdk';
 import * as csv from 'csv-parser';
 import {StatusCodes} from 'http-status-codes';
 import {config} from '../common/config';
 
 export const importFileParser = (event: S3Event) => {
   const s3: S3 = new S3({region: 'eu-west-1'});
+  const sqs = new SQS();
 
   for (const record of event.Records) {
     const s3Stream = s3.getObject({
@@ -14,7 +15,19 @@ export const importFileParser = (event: S3Event) => {
     }).createReadStream();
 
     s3Stream.pipe(csv())
-      .on('data', (data) => console.log(data))
+      .on('data', (data) => {
+        const dataString: string = JSON.stringify(data);
+        sqs.sendMessage({
+          QueueUrl: config.CATALOG_ITEMS_QUEUE_URL,
+          MessageBody: dataString
+        }, (err) => {
+          if (err) {
+            console.log('SQS error', err);
+          } else {
+            console.log(`Send message for: ${dataString}`);
+          }
+        });
+      })
       .on('end', async () => {
         console.log(`Copy from ${config.BUCKET_NAME}/${record.s3.object.key}`);
 

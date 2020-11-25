@@ -21,7 +21,7 @@ export const createProduct = errorHandler(async (event: APIGatewayProxyEvent) =>
         throw new createError.BadRequest("Title field is absent");
     }
 
-    const client: Client = new Client(config.databaseOptions);
+    const client: Client = new Client(config.DATABASE_OPTIONS);
     await client.connect();
 
     let createdProduct: Product;

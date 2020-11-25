@@ -9,7 +9,7 @@ const serverlessConfiguration: Serverless = {
     webpack: {
       webpackConfig: './webpack.config.js',
       includeModules: {
-        forceExclude: 'aws-sdk',
+        forceExclude: 'aws-sdk'
       }
     }
   },
@@ -22,7 +22,8 @@ const serverlessConfiguration: Serverless = {
       minimumCompressionSize: 1024
     },
     environment: {
-      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+      AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      CATALOG_ITEMS_QUEUE_URL: '${cf:product-service-${self:provider.stage}.SQSQueueUrl}'
     },
     iamRoleStatements: [
       {
@@ -34,6 +35,11 @@ const serverlessConfiguration: Serverless = {
         Effect: 'Allow',
         Action: ['s3:*'],
         Resource: ['arn:aws:s3:::import-service-nodejs-bucket/*']
+      },
+      {
+        Effect: 'Allow',
+        Action: 'sqs:*',
+        Resource: ['${cf:product-service-${self:provider.stage}.SQSQueueArn}']
       }
     ]
   },

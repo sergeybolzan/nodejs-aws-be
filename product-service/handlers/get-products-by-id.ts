@@ -17,7 +17,7 @@ export const getProductsById = errorHandler(async (event: APIGatewayProxyEvent) 
         throw new createError.BadRequest();
     }
 
-    const client: Client = new Client(config.databaseOptions);
+    const client: Client = new Client(config.DATABASE_OPTIONS);
     await client.connect();
 
     let products: Product[];

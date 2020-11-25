@@ -10,7 +10,7 @@ import {logRequest} from "../common/log-request";
 
 export const getProductsList = errorHandler(async (event: APIGatewayProxyEvent) => {
     logRequest(event);
-    const client: Client = new Client(config.databaseOptions);
+    const client: Client = new Client(config.DATABASE_OPTIONS);
     await client.connect();
 
     try {
