@@ -9,6 +9,22 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+let cacheProducts;
+
+app.get('/products', (req, res, next) => {
+  if (cacheProducts) {
+    res.send(cacheProducts);
+  } else {
+    res.sendResponse = res.send;
+    res.send = (body) => {
+      cacheProducts = JSON.parse(body);
+      setTimeout(() => cacheProducts = null, 120000);
+      res.sendResponse(body);
+    }
+    next();
+  }
+});
+
 app.all('/*', async (req, res) => {
   console.log('originalUrl', req.originalUrl); // /products/1
   console.log('method', req.method);
