@@ -1,9 +1,13 @@
 # nodejs-aws-be
+Frontend: https://github.com/sergeybolzan/nodejs-aws-fe
 
-Product service swagger link:
+Cart api: https://github.com/sergeybolzan/rs-cart-api
+
+## Product service swagger link:
 [https://app.swaggerhub.com/apis/sergeybolzan/product-service/1.0.0](https://app.swaggerhub.com/apis/sergeybolzan/product-service/1.0.0)
 
-Serverless template names:
+##Serverless
+Template names:
 - aws-nodejs
 - aws-nodejs-typescript
 
