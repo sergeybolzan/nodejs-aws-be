@@ -65,7 +65,7 @@ const serverlessConfiguration: Serverless = {
             'gatewayresponse.header.Access-Control-Allow-Origin': '\'*\'',
             'gatewayresponse.header.Access-Control-Allow-Headers': '\'*\''
           },
-          ResponseType: 'DEFAULT_4XX',
+          ResponseType: 'DEFAULT_5XX',
           RestApiId: {
             Ref: 'ApiGatewayRestApi'
           }
